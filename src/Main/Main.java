@@ -1,11 +1,11 @@
 package Main;
 
-import QuanLyPizza.DAO.MyConnect;
-import QuanLyPizza.GUI.DangNhapGUI;
+import DAO.MyConnect;
+import GUI.DangNhapGUI;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         new MyConnect();
 
         changLNF("Nimbus");
@@ -25,3 +25,4 @@ public class Main {
         }
     }
 }
+
