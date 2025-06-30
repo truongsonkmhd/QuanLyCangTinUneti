@@ -9,20 +9,23 @@ import java.sql.Statement;
 
 public class TaiKhoanDAO {
 
-    public boolean themTaiKhoan(int maNV, String tenDangNhap, String quyen) {
-        try {
-            String sql = "INSERT INTO taikhoan(MaNV, TenDangNhap, MatKhau, Quyen) "
-                    + "VALUES (?, ?, ?, ?)";
-            PreparedStatement pre = MyConnect.conn.prepareStatement(sql);
-            pre.setInt(1, maNV);
-            pre.setString(2, tenDangNhap);
-            pre.setString(3, tenDangNhap);
-            pre.setString(4, quyen);
-            return pre.executeUpdate() > 0;
-        } catch (Exception e) {
-        }
-        return false;
+    public boolean themTaiKhoan(int maNV, String tenDangNhap, String matKhau, String quyen) {
+    String sql = "INSERT INTO taikhoan (MaNV, TenDangNhap, MatKhau, Quyen ,TrangThai) VALUES (?, ?, ?, ? ,?)";
+    
+    try (PreparedStatement pre = MyConnect.conn.prepareStatement(sql)) {
+        pre.setInt(1, maNV);
+        pre.setString(2, tenDangNhap);
+        pre.setString(3, matKhau);
+        pre.setString(4, quyen);
+        pre.setInt(5, 1);
+        
+        return pre.executeUpdate() > 0;
+    } catch (Exception  e) {
+        e.printStackTrace(); // Optional: log this properly in a real app
     }
+    
+    return false;
+}
 
     public boolean kiemTraTrungTenDangNhap(String tenDangNhap) {
         try {
@@ -108,13 +111,12 @@ public class TaiKhoanDAO {
         return false;
     }
 
-    public boolean doiMatKhau(String matKhauCu, String matKhauMoi) {
+    public boolean doiMatKhau(String matKhauMoi) {
         try {
-            String sql = "UPDATE TaiKhoan SET MatKhau=? WHERE MaNV=? AND MatKhau=?";
+            String sql = "UPDATE TaiKhoan SET MatKhau=? WHERE MaNV=?";
             PreparedStatement pre = MyConnect.conn.prepareStatement(sql);
             pre.setString(1, matKhauMoi);
             pre.setInt(2, DangNhapBUS.taiKhoanLogin.getMaNhanVien());
-            pre.setString(3, matKhauCu);
             return pre.executeUpdate() > 0;
         } catch (Exception e) {
         }

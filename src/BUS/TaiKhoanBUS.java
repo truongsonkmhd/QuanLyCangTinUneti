@@ -42,9 +42,9 @@ public class TaiKhoanBUS {
         return taiKhoanDAO.kiemTraTrungTenDangNhap(tenDangNhap);
     }
 
-    public boolean themTaiKhoan(String ma, String tenDangNhap, String quyen) {
+    public boolean themTaiKhoan(String ma, String tenDangNhap, String matKhauChuaMaHoa,String matkhau, String quyen) {
         int maNV = Integer.parseInt(ma);
-        if (tenDangNhap.trim().equals("")) {
+        if (tenDangNhap.trim().equals("") && matkhau.trim().equals("")) {
             new MyDialog("Không được để trống Tên đăng nhập!", MyDialog.ERROR_DIALOG);
             return false;
         }
@@ -56,9 +56,9 @@ public class TaiKhoanBUS {
             }
             return false;
         }
-        boolean flag = taiKhoanDAO.themTaiKhoan(maNV, tenDangNhap, quyen);
+        boolean flag = taiKhoanDAO.themTaiKhoan(maNV, tenDangNhap,matkhau, quyen);
         if (flag) {
-            new MyDialog("Cấp tài khoản thành công! Mật khẩu là " + tenDangNhap, MyDialog.SUCCESS_DIALOG);
+            new MyDialog("Cấp tài khoản thành công! Mật khẩu là " + matKhauChuaMaHoa, MyDialog.SUCCESS_DIALOG);
         } else {
             new MyDialog("Cấp tài khoản thất bại! Tài khoản đã tồn tại", MyDialog.ERROR_DIALOG);
         }
@@ -85,12 +85,9 @@ public class TaiKhoanBUS {
         }
     }
 
-    public boolean doiMatKhau(String matKhauCu, String matKhauMoi, String nhapLaiMatKhau) {
-        if(!matKhauMoi.equals(nhapLaiMatKhau)) {
-            new MyDialog("Mật khẩu mới không khớp!", MyDialog.ERROR_DIALOG);
-            return false;
-        }
-        boolean flag = taiKhoanDAO.doiMatKhau(matKhauCu, matKhauMoi);
+    public boolean doiMatKhau(String matKhauMoi) {
+     
+        boolean flag = taiKhoanDAO.doiMatKhau(matKhauMoi);
         if (flag) {
             new MyDialog("Đổi thành công!", MyDialog.SUCCESS_DIALOG);
         } else {

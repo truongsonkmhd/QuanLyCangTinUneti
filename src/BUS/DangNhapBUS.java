@@ -1,7 +1,6 @@
 package BUS;
 
 import DAO.DangNhapDAO;
-import DTO.PhanQuyen;
 import DTO.TaiKhoan;
 import MyCustom.MyDialog;
 
@@ -14,16 +13,12 @@ public class DangNhapBUS {
     public static TaiKhoan taiKhoanLogin = null;
 
     public TaiKhoan getTaiKhoanDangNhap(String user, String password, boolean selected) {
-        if (kiemTraDangNhap(user, password) == EMPTY_ERROR) {
+        if (kiemTraDangNhap(user, password) == EMPTY_ERROR ) {
             new MyDialog("Không được để trống thông tin!", MyDialog.ERROR_DIALOG);
             return null;
         }
-        TaiKhoan tk = new TaiKhoan();
-        tk.setTenDangNhap(user);
-        tk.setMatKhau(password);
-
         DangNhapDAO dangNhapDAO = new DangNhapDAO();
-        TaiKhoan account = dangNhapDAO.dangNhap(tk);
+        TaiKhoan account = dangNhapDAO.getUserByUserEnter(user);
         taiKhoanLogin = account;
 
         if (account == null) {
@@ -32,8 +27,6 @@ public class DangNhapBUS {
             PhanQuyenBUS phanQuyenBUS = new PhanQuyenBUS();
             phanQuyenBUS.kiemTraQuyen(account.getQuyen());
             xuLyGhiNhoDangNhap(user, password, selected);
-            new MyDialog("Đăng nhập thành công!", MyDialog.SUCCESS_DIALOG);
-//            new MyDialog("Vì tình hình dịch Covid phức tạp, cửa hàng chỉ thực hiện bán mang về!", MyDialog.INFO_DIALOG);
         }
         return account;
     }
@@ -73,7 +66,7 @@ public class DangNhapBUS {
         tk.setMatKhau(password);
 
         DangNhapDAO dangNhapDAO = new DangNhapDAO();
-        TaiKhoan account = dangNhapDAO.dangNhap(tk);
+        TaiKhoan account = dangNhapDAO.getUserByUserEnter(user);
 
         if (user.length() <= 0 || password.length() <= 0) {
             result = EMPTY_ERROR;
@@ -82,5 +75,7 @@ public class DangNhapBUS {
         }
         return result;
     }
+    
+
 
 }

@@ -1,10 +1,15 @@
 package GUI;
 
+import BUS.BCrypt;
 import BUS.TaiKhoanBUS;
+import DTO.TaiKhoan;
+import javax.swing.JOptionPane;
 
 public class DlgDoiMatKhau extends javax.swing.JDialog {
 
-    public DlgDoiMatKhau() {
+    private TaiKhoan taiKhoan ;
+    public DlgDoiMatKhau(TaiKhoan taiKhoan) {
+        this.taiKhoan = taiKhoan;
         initComponents();
         this.setTitle("Đổi mật khẩu");
         this.setLocationRelativeTo(null);
@@ -141,11 +146,53 @@ public class DlgDoiMatKhau extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnXacNhanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXacNhanActionPerformed
-        TaiKhoanBUS tkBUS = new TaiKhoanBUS();
-        boolean flag = tkBUS.doiMatKhau(txtMatKhauCu.getText(), txtMatKhauMoi.getText(), txtNhapLaiMatKhau.getText());
-        if (flag) {
-            btnHuy.doClick();
+           boolean check = true;
+        String curPass = txtMatKhauCu.getText();
+        String newPass = txtMatKhauMoi.getText();
+        String newPassConf = txtNhapLaiMatKhau.getText();
+
+        if (curPass.length() == 0) {
+            check = false;
+            txtMatKhauCu.setText("Vui lòng nhập mật khẩu hiện tại");
+        } else {
+            txtMatKhauCu.setText("");
         }
+        if (newPass.length() == 0) {
+            check = false;
+            txtMatKhauMoi.setText("Vui lòng nhập mật khẩu mới");
+        } else {
+            txtMatKhauMoi.setText("");
+        }
+        if (newPassConf.length() == 0) {
+            check = false;
+            txtNhapLaiMatKhau.setText("Vui lòng xác nhận lại mật khẩu");
+        } else {
+            txtNhapLaiMatKhau.setText("");
+        }
+        if (check) {
+    String matKhauDaLuu = taiKhoan.getMatKhau();
+            System.out.println(matKhauDaLuu);
+    // Kiểm tra xem mật khẩu đã lưu có đúng định dạng BCrypt không
+        if (newPass.length() < 6) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập mật khẩu mới lớn hơn hoặc bằng 6 ký tự");
+            } else if (!newPass.equals(newPassConf)) {
+                JOptionPane.showMessageDialog(this, "Mật khẩu mới không khớp");
+            } else {
+                System.out.println(newPass);
+                String pass = BCrypt.hashpw(newPass, BCrypt.gensalt(12));
+                TaiKhoanBUS tkBUS = new TaiKhoanBUS();
+                boolean flag = tkBUS.doiMatKhau(pass);
+                if (flag) {
+                    JOptionPane.showMessageDialog(this, "Thay đổi mật khẩu thành công!");
+                    btnHuy.doClick(); // Reset hoặc đóng form nếu cần
+                } else {
+                    JOptionPane.showMessageDialog(this, "Thay đổi mật khẩu thất bại. Vui lòng thử lại.");
+                }
+            }
+}
+
+        
+       
     }//GEN-LAST:event_btnXacNhanActionPerformed
 
     private void btnHuyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuyActionPerformed

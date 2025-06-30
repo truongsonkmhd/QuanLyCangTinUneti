@@ -1,7 +1,9 @@
 package GUI;
 
+import BUS.BCrypt;
 import BUS.DangNhapBUS;
 import DTO.TaiKhoan;
+import MyCustom.MyDialog;
 import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
@@ -41,16 +43,55 @@ public class DangNhapGUI extends JFrame implements ActionListener {
         }
     }
       
-       private void xuLyDangNhap() {
+      // Option 1: Check if password is already BCrypt hashed
+private void xuLyDangNhap() {
     DangNhapBUS dangNhapBUS = new DangNhapBUS();
     TaiKhoan tk = dangNhapBUS.getTaiKhoanDangNhap(tfName.getText(), pfPass.getText(), chkRemember.isSelected());
-    if (tk != null) {
-        MainQuanLyGUI gui = new MainQuanLyGUI(tk);
-        gui.showWindow();
-        this.dispose();
-    } 
-       }
 
+    if (tk != null) {
+        String storedPassword = tk.getMatKhau();
+        String inputPassword = pfPass.getText();
+        // Check if stored password is BCrypt format
+        if (storedPassword.startsWith("$2") || storedPassword.startsWith("$2a") || storedPassword.startsWith("$2b")) {
+            // Password is BCrypt hashed
+            if (BCrypt.checkpw(inputPassword, storedPassword)) {
+                
+            new MyDialog("Đăng nhập thành công!", MyDialog.SUCCESS_DIALOG);
+                MainQuanLyGUI gui = new MainQuanLyGUI(tk);
+                gui.showWindow();
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Mật khẩu không đúng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            // Password is plain text or different hash format
+            if (inputPassword.equals(storedPassword)) {
+                MainQuanLyGUI gui = new MainQuanLyGUI(tk);
+                gui.showWindow();
+                this.dispose();
+            } else {
+                JOptionPane.showMessageDialog(this, "Mật khẩu không đúng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "Tên đăng nhập hoặc mật khẩu không đúng!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+    }
+}
+
+
+public void updatePasswordToBcrypt(String username, String plainPassword) {
+    // Generate BCrypt hash
+    String hashedPassword = BCrypt.hashpw(plainPassword, BCrypt.gensalt());
+    
+    // Update in database
+    // Your DAO method to update password
+    // userDAO.updatePassword(username, hashedPassword);
+}
+
+// Method to check if password needs migration
+private boolean needsPasswordMigration(String storedPassword) {
+    return !storedPassword.matches("^\\$2[abyxz]?\\$\\d{2}\\$.{53}$");
+}
         
     public void showWindow() {
         Image icon = Toolkit.getDefaultToolkit().getImage("image/ManagerUI/icon-app.png");

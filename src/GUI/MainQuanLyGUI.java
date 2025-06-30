@@ -40,7 +40,8 @@ public class MainQuanLyGUI extends JFrame {
     
     Color InfoBgColor = new Color(52, 58, 72); // Màu nền info cho sidebar
     
-    public NhanVien nhanVien;
+    private NhanVien nhanVien;
+    private TaiKhoan taikhoan;
     
     JLabel btnClose, btnMinimize , lblTrangChu, lblBanHang, lblKhuyenMai, lblNhapHang, lblSanPham, lblNhanVien, lblKhachHang, lblThongKe;
     final Color clLeftItem = new Color(63, 74, 89);
@@ -50,11 +51,11 @@ public class MainQuanLyGUI extends JFrame {
     CardLayout cardMenuLeftGroup = new CardLayout();
 
     public MainQuanLyGUI(TaiKhoan taiKhoan) {
+        this.taikhoan = taiKhoan;
         this.setSize(1280, 850);
         Image icon = Toolkit.getDefaultToolkit().getImage("image/ManagerUI/icon-app.png");
         this.setIconImage(icon);
-        System.out.println(taiKhoan.getMaNhanVien());
-        nhanVien = NhanVienBUS.getInstance().getNhanVienByMaNV(taiKhoan.getMaNhanVien());
+        nhanVien = NhanVienBUS.getInstance().getNhanVienByMaNV(taikhoan.getMaNhanVien());
         addControls();
         addEvents();
         startClock(); 
@@ -302,7 +303,7 @@ avatarPanel.add(lblAvatar);
         lblAvatar.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent evt) {
-                showUserInfo();
+                  new DlgDoiMatKhau(taikhoan).setVisible(true);
             }
             
             @Override
@@ -441,15 +442,7 @@ avatarPanel.add(lblAvatar);
         }
     }
 
-    private void showUserInfo() {
-        String info = "Thông tin nhân viên:\n\n" +
-                      "Mã NV: " + nhanVien.getMaNV() + "\n" +
-                      "Họ tên: " + nhanVien.getHo() + " " + nhanVien.getTen() + "\n" +
-                      "Giới tính: " + nhanVien.getGioiTinh() + "\n" +
-                      "Chức vụ: " + nhanVien.getChucVu();
-        
-        JOptionPane.showMessageDialog(this, info, "Thông tin tài khoản", JOptionPane.INFORMATION_MESSAGE);
-    }
+   
 
     int xMouse, yMouse;
 
@@ -594,7 +587,8 @@ avatarPanel.add(lblAvatar);
             if (clockTimer != null) {
                 clockTimer.stop();
             }
-            // banHangPanel.xuLyThoat();
+             banHangPanel.xuLyThoat();
+             System.exit(0);
             Main.Main.changLNF("Nimbus");
             
         }

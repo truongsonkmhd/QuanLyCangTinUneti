@@ -8,16 +8,17 @@ import java.sql.SQLException;
 
 public class DangNhapDAO {
 
-    public TaiKhoan dangNhap(TaiKhoan tk) {
+    public TaiKhoan getUserByUserEnter(String tenDangNhap) {
         try {
-            String sql = "SELECT * FROM taikhoan WHERE TenDangNhap=? AND MatKhau=? AND TrangThai=1";
+            String sql = "SELECT * FROM taikhoan WHERE TenDangNhap=? AND TrangThai=1";
             PreparedStatement pre = MyConnect.conn.prepareStatement(sql);
-            pre.setString(1, tk.getTenDangNhap());
-            pre.setString(2, tk.getMatKhau());
+            pre.setString(1, tenDangNhap);
             ResultSet rs = pre.executeQuery();
             TaiKhoan tkLogin = null;
             if (rs.next()) {
-                tkLogin = tk;
+                tkLogin = new TaiKhoan();
+                tkLogin.setTenDangNhap(rs.getString("TenDangNhap"));
+                tkLogin.setMatKhau(rs.getString("MatKhau"));
                 tkLogin.setMaNhanVien(rs.getInt("MaNV"));
                 tkLogin.setQuyen(rs.getString("Quyen"));
             }
@@ -25,6 +26,6 @@ public class DangNhapDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return tk;
+        return null;
     }
 }
