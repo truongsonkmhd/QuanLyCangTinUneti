@@ -205,7 +205,6 @@ public class MainQuanLyGUI extends JFrame {
 
         //======XỬ LÝ PHÂN QUYỀN=======
         PhanQuyen quyen = PhanQuyenBUS.quyenTK;
-
         if (quyen.getNhapHang() == 1) {
             nhapHangPanel = new PnQuanLyNhapHangGUI();
             pnNhapHang.setLayout(new BorderLayout());
@@ -249,7 +248,6 @@ public class MainQuanLyGUI extends JFrame {
     // Phương thức tạo panel thông tin ở đầu sidebar
     private void createSidebarInfoPanel(JPanel infoPanel) {
         PhanQuyen quyen = PhanQuyenBUS.quyenTK;
-
         JPanel mainInfo = new JPanel();
         mainInfo.setOpaque(false);
         mainInfo.setLayout(new BorderLayout());
